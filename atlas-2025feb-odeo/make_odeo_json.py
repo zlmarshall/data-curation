@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+
+output_directory = 'test'
+import os
+try:
+    os.mkdir(output_directory)
+except:
+    pass
+
+'''
+This creates json files for the Open Data Portal with:
+
+-) One record per skim of detector data
+	- One file per period
+-) One record per skim of the MC
+	- One file per DSID / MC simulation configuration
+
+We have a _very short_ description for each of the pages, linking to the main documentation
+and explaining in a few sentences what that particular record represents. Each record has a DOI,
+and we create a `meta record' containing links to all pages that summarizes the full release of
+Open Data for Education and Outreach.
+'''
+
+import json
+
+# Need new recids and DOIs
+
+# Map of skim names into pretty-print descriptions
+skim_name_map = {
+    '1LMET30':'at least one lepton with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a leptonically-decaying W-boson enhanced selection).',
+    '2J2LMET30':'at least two jets and two leptons with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a di-leptonic top-quark enhanced selection).',
+    '2bjets':'at least two jets with at least 20 GeV of p<sub>T</sub> identified as containing at least one heavy flavor hadron (i.e. a Higgs boson decaying to b-quarks enhanced selection).',
+    '2muons':'at least two muons with at least 20 GeV of p<sub>T</sub> (i.e. a leptonically-decaying Z-boson enhanced selection).',
+    '2to4lep':'at least two to four leptons with at least 20 GeV of p<sub>T</sub> each.',
+    '3J1LMET30':'at least three jets and one lepton with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a semi-leptonic top-quark enhanced selection).',
+    'GamGam':'at least two photons with at least 20 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying to two photons enhanced selection).',
+    'exactly4lep':'exactly four leptons with at least 20 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying via Z-bosons to four leptons enhanced selection).',
+    '3lep':'at least three leptons with at least 20 GeV of p<sub>T</sub> each.',
+    '4lep':'at least four leptons with at least 20 GeV of p<sub>T</sub> each.',
+    'exactly3lep':'exactly three leptons with at least 20 GeV of p<sub>T</sub> (i.e. a leptonically-decaying W+Z boson enhanced selection).'
+    'noskim':'none.'
+  }
+
+# Get datasets
+dataset_files = {}
+with open('dataset_list.txt','r') as dslist:
+    for aline in dslist:
+        skim = aline.split('_')[2]
+        if skim=='noskim':
+            skim = 'no' # Fun little hack to fix the English...
+        name_short = '-'.join(aline.split('_')[2:4]).lower()
+        if 'Data' in aline:
+            name = f'Run 2 2015+2016 proton-proton collision data, {skim} skim'
+        else:
+            name = f'MC simulation, {skim} skim'
+        dataset_files[ aline.strip() ] = {'name_short':name_short, 'name':name,
+                                          'categories':{'source':'ATLAS Collaboration'},'doi':'10.7483/OPENDATA.ATLAS.1234.1234','recid':'12345'}
+
+# Populate fields
+
+# This is applicable for the pp data only!
+evergreen_data = {
+    # Accelerator - just CERN LHC
+    "accelerator": "CERN-LHC",
+    # ATLAS Collaboration; recid only if we need a specific author list
+    "collaboration": {
+      "name": "ATLAS collaboration",
+     },
+    # Basic collision data - this applies only to the pp data
+    "collision_information": {
+      "energy": "13TeV",
+      "type": "pp"
+    },
+    # Published this year!
+    "date_published": "2025",
+    # ATLAS experiment
+    "experiment": [
+      "ATLAS"
+    ],
+    # Thanks to the Open Data Portal
+    "publisher": "CERN Open Data Portal",
+    # data-taking year during which the collision data or for which the simulated data, software and other assets were produced
+    "date_created": ['2015','2016'],
+    "run_period": ['2015','2016'],
+    # Note: beginning of the reprocessing
+    "date_reprocessed": "2020",
+    "distribution": {
+      "formats": [
+        "root"
+      ],
+    },
+    # Dataset type information for Open Data Portal
+    "type": {
+      "primary": "Dataset",
+    },
+    # Information about usage
+    "usage": {
+      "description": "<p> The data and MC simulation provided by the ATLAS experiment in root ntuple format is released under a CC0 license; citation of the data and acknowledgement of the collaboration is requested. This format can be used directly using ROOT or uproot for simple studies and is primarily intended for educational and outreach purposes. <p>Extensive instructions for interacting with the data, as well as documentation of the dataset naming conventions and their contents, are provided on the ATLAS Open Data website linked below. For those interested in implementing a research-quality data analysis, the open data designed for research (also linked below) may be a better starting point. Please be sure to cite the Open Data that you use, in line with the policy below.",
+      "links": [
+        {
+          "description": "ATLAS Open Data Website",
+          "url": "http://opendata.atlas.cern"
+        },
+        {
+          "description": "Resources to understand and use the open data for education and outreach",
+          "url": "https://opendata.atlas.cern/docs/category/13-tev-tutorials-for-education"
+        },
+        {
+          "description": "More about this ntuple format",
+          "url": "https://opendata.atlas.cern/docs/documentation/data_format/FEB2025_ntuple/"
+        },
+        {
+          "description": "Ntuple making framework",
+          "url": "http://gitlab.cern.ch/atlas-outreach-data-tools/physlitetoopendata"
+        },
+        {
+          "description": "Citation policy",
+          "url": "https://opendata.atlas.cern/docs/documentation/ethical_legal/citation_policy"
+        },
+      ]
+    },
+    # Information about (production) methodology
+    'methodology': {
+      'description':'<p>These data were created during LS2 as part of a major reprocessing campaign of the Run 2 data. All data were reprocessed using Athena Release 22, and new corresponding MC simulation samples were produced. These data and MC simulation datasets were processed into ROOT ntuple files from the DAOD_PHYSLITE format that is released as open data for research. For the files in this record, the following skimming selection was applied: '
+    },
+    "license": {
+      "attribution": "CC0-1.0"
+    }
+}
+
+# File with the mapping of file names for each dataset
+json_metadata_file = open('odeo_file_mapping_ODEO_v0_FEB2025_2025-02-28.json','r')
+json_file_locations = json.load(json_metadata_file)['file_locations']
+
+# Sums for use later on
+big_total_files = 0
+big_total_events = 0
+big_total_size = 0
+
+for adataset in dataset_files:
+    my_json = {}
+    # Update with the stuff that's always good
+    my_json.update(evergreen_data)
+    # Simple abstract for the collection
+    my_json['abstract'] = {'description':dataset_files[adataset]['name']+' from the ATLAS experiment'}
+    # Name of the collections, systematically set
+    my_json['collections'] = ['ATLAS-Simulated-Datasets' if 'mc_' in adataset else 'ATLAS-Primary-Datasets']
+    if 'Data' in adataset:
+        my_json['type']['secondary'] = ['Collision']
+    else:
+        my_json['type']['secondary'] = ['Simulated']
+    # Add categories, mostly for MC datasets
+    my_json['categories'] = dataset_files[adataset]['categories']
+    my_json['title'] = 'ATLAS ROOT ntuple format '+dataset_files[adataset]['name']
+    # Add a record ID for CERN Open Data. Reserved range for this release
+    my_json['recid'] = dataset_files[adataset]['recid']
+    # Add the DOI - these are pre-reserved by the Open Data Portal team
+    my_json['doi'] = dataset_files[adataset]['doi']
+    # Update the methodology section with the skim description
+    skim = adataset.split('_')[2]
+    my_json['methodology']['description'] += skim_name_map[skim]
+    # Add a record of the files for this dataset
+    my_json['files'] = []
+    # Make list of files for this dataset
+    my_json['files'] = [ {'filename':afile,
+                          'checksum':json_file_locations[adataset][afile]['checksum'],
+                          'size':json_file_locations[adataset][afile]['size'],
+                          'events':json_file_locations[adataset][afile]['events'],
+                          'type':json_file_locations[adataset][afile]['type'],
+                          'uri_root':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
+    # Counters to be used in updating the metadata for the overall record
+    total_files = len(my_json['files'])
+    total_events = sum( [ int(x['events']) for x in my_json['files'] ] )
+    total_size = sum( [ int(x['size']) for x in my_json['files'] ] )
+    # Add the file and event sums to the top-level record
+    my_json['distribution']['number_events'] = total_events
+    my_json['distribution']['number_files'] = total_files
+    my_json['distribution']['size'] = total_size
+    # Update the running sums
+    big_total_events += total_events
+    big_total_files += total_files
+    big_total_size += total_size
+    # Link to the top-level record
+    my_json['relations'] = [ {'description':'For citing all the Open Data for Education and Outreach from this release, and to find other related datasets, please see',
+                              'doi':'10.7483/OPENDATA.ATLAS.1234.1234',
+                              'recid':'12345',
+                              'title':'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach from the ATLAS experiment',
+                              'type':'isChildOf'
+                             } ]
+    # Write myself a json file
+    summary_file_name = 'atlas-odeo-FEB2025-'+dataset_files[adataset]['name_short']+'.json'
+    with open(output_directory+'/'+summary_file_name,'w') as outfile:
+        json.dump(
+            [ my_json ],
+            outfile,
+            indent=2,
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ": "),
+        )
+
+# Add the top-level json file
+my_json = {}
+# Update with the stuff that's always good
+my_json.update(evergreen_data)
+# Simple abstract for the collection
+my_json['abstract'] = {'description':'2015 Pb-Pb Open Data for Research from the ATLAS experiment'}
+# Name of the collections, systematically set
+my_json['collections'] = ['ATLAS-Simulated-Datasets','ATLAS-Primary-Datasets']
+my_json['type']['secondary'] = ['Simulated','Collision']
+# Add categories, mostly for MC datasets
+my_json['categories'] = {'source':'ATLAS Collaboration'}
+my_json['title'] = 'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach from the ATLAS experiment'
+# Add a record ID for CERN Open Data. Reserved range for this release
+my_json['recid'] = '12345'
+# Add the DOI - these are pre-reserved by the Open Data Portal team
+my_json['doi'] = '10.7483/OPENDATA.ATLAS.1234.1234'
+# Add the file and event sums to the top-level record
+my_json['distribution']['number_events'] = big_total_events
+my_json['distribution']['number_files'] = big_total_files
+my_json['distribution']['size'] = big_total_size
+# Link to the other datasets
+my_json['relations'] = []
+for adataset in dataset_files:
+    my_json['relations'] += [ {'description':dataset_files[adataset]['name'],
+                               'doi':dataset_files[adataset]['doi'],
+                               'recid':dataset_files[adataset]['recid'],
+                               'title':dataset_files[adataset]['name'],
+                               'type':'isParentOf'
+                              } ]
+
+# Write myself a json file
+summary_file_name = 'atlas-odeo-FEB2025-summary.json'
+with open(output_directory+'/'+summary_file_name,'w') as outfile:
+    json.dump(
+        [ my_json ],
+        outfile,
+        indent=2,
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ": "),
+    )
