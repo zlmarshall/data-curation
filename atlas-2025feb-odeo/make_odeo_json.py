@@ -27,19 +27,47 @@ import json
 
 # Map of skim names into pretty-print descriptions
 skim_name_map = {
-    '1LMET30':'at least one lepton with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a leptonically-decaying W-boson enhanced selection).',
-    '2J2LMET30':'at least two jets and two leptons with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a di-leptonic top-quark enhanced selection).',
+    '1LMET30':'at least one lepton with at least 10 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a leptonically-decaying W-boson enhanced selection).',
+    '2J2LMET30':'at least two jets with at least 20 GeV of p<sub>T</sub> and two leptons with at least 10 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a di-leptonic top-quark enhanced selection).',
     '2bjets':'at least two jets with at least 20 GeV of p<sub>T</sub> identified as containing at least one heavy flavor hadron (i.e. a Higgs boson decaying to b-quarks enhanced selection).',
-    '2muons':'at least two muons with at least 20 GeV of p<sub>T</sub> (i.e. a leptonically-decaying Z-boson enhanced selection).',
-    '2to4lep':'at least two to four leptons with at least 20 GeV of p<sub>T</sub> each.',
-    '3J1LMET30':'at least three jets and one lepton with at least 20 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a semi-leptonic top-quark enhanced selection).',
+    '2muons':'at least two muons with at least 10 GeV of p<sub>T</sub> (i.e. a leptonically-decaying Z-boson enhanced selection).',
+    '2to4lep':'two to four leptons with at least 10 GeV of p<sub>T</sub> each.',
+    '3J1LMET30':'at least three jets with at least 10 GeV of p<sub>T</sub>, one lepton with at least 10 GeV of p<sub>T</sub>, and 30 GeV of missing transverse momentum (i.e. a semi-leptonic top-quark enhanced selection).',
     'GamGam':'at least two photons with at least 20 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying to two photons enhanced selection).',
-    'exactly4lep':'exactly four leptons with at least 20 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying via Z-bosons to four leptons enhanced selection).',
-    '3lep':'at least three leptons with at least 20 GeV of p<sub>T</sub> each.',
-    '4lep':'at least four leptons with at least 20 GeV of p<sub>T</sub> each.',
-    'exactly3lep':'exactly three leptons with at least 20 GeV of p<sub>T</sub> (i.e. a leptonically-decaying W+Z boson enhanced selection).'
+    'exactly4lep':'exactly four leptons with at least 10 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying via Z-bosons to four leptons enhanced selection).',
+    '3lep':'at least three leptons with at least 10 GeV of p<sub>T</sub> each.',
+    '4lep':'at least four leptons with at least 10 GeV of p<sub>T</sub> each.',
+    'exactly3lep':'exactly three leptons with at least 10 GeV of p<sub>T</sub> (i.e. a leptonically-decaying W+Z boson enhanced selection).',
     'noskim':'none.'
   }
+
+# recid doi
+recid_doi_pairs = [
+('93911', '10.7483/OPENDATA.ATLAS.ZPCQ.9VO2'),
+('93912', '10.7483/OPENDATA.ATLAS.CMHX.9D8M'),
+('93913', '10.7483/OPENDATA.ATLAS.NNF8.76IX'),
+('93914', '10.7483/OPENDATA.ATLAS.SCWS.LYYX'),
+('93915', '10.7483/OPENDATA.ATLAS.GYRR.GRP3'),
+('93916', '10.7483/OPENDATA.ATLAS.IBFR.R9L3'),
+('93917', '10.7483/OPENDATA.ATLAS.L5QV.U2XC'),
+('93918', '10.7483/OPENDATA.ATLAS.7UW9.C9LL'),
+('93919', '10.7483/OPENDATA.ATLAS.ZXYW.FXJO'),
+('93920', '10.7483/OPENDATA.ATLAS.71IP.L3OC'),
+('93921', '10.7483/OPENDATA.ATLAS.6VGH.HN41'),
+('93922', '10.7483/OPENDATA.ATLAS.IMZO.7U52'),
+('93923', '10.7483/OPENDATA.ATLAS.OMF2.CICK'),
+('93924', '10.7483/OPENDATA.ATLAS.3ATL.Q9Z2'),
+('93925', '10.7483/OPENDATA.ATLAS.211Z.76E7'),
+('93926', '10.7483/OPENDATA.ATLAS.CIU5.U5YX'),
+('93927', '10.7483/OPENDATA.ATLAS.1P1H.J3QK'),
+('93928', '10.7483/OPENDATA.ATLAS.XNPI.CX93'),
+('93929', '10.7483/OPENDATA.ATLAS.KPYL.P0EE'),
+('93930', '10.7483/OPENDATA.ATLAS.AR66.6RTA'),
+('93931', '10.7483/OPENDATA.ATLAS.9VTD.OT28'),
+('93932', '10.7483/OPENDATA.ATLAS.IPG4.6M6X'),
+('93933', '10.7483/OPENDATA.ATLAS.VV3I.0WJE'),
+('93934', '10.7483/OPENDATA.ATLAS.0CJR.N7ZT'),
+      ]
 
 # Get datasets
 dataset_files = {}
@@ -53,11 +81,11 @@ with open('dataset_list.txt','r') as dslist:
             name = f'Run 2 2015+2016 proton-proton collision data, {skim} skim'
         else:
             name = f'MC simulation, {skim} skim'
+        rec_doi = recid_doi_pairs.pop()
         dataset_files[ aline.strip() ] = {'name_short':name_short, 'name':name,
-                                          'categories':{'source':'ATLAS Collaboration'},'doi':'10.7483/OPENDATA.ATLAS.1234.1234','recid':'12345'}
+                                          'categories':{'source':'ATLAS Collaboration'},'doi':rec_doi[1],'recid':rec_doi[0]}
 
 # Populate fields
-
 # This is applicable for the pp data only!
 evergreen_data = {
     # Accelerator - just CERN LHC
@@ -129,7 +157,7 @@ evergreen_data = {
 }
 
 # File with the mapping of file names for each dataset
-json_metadata_file = open('odeo_file_mapping_ODEO_v0_FEB2025_2025-02-28.json','r')
+json_metadata_file = open('odeo_file_mapping_ODEO_v0_FEB2025_2025-03-01.json','r')
 json_file_locations = json.load(json_metadata_file)['file_locations']
 
 # Sums for use later on
@@ -212,9 +240,9 @@ my_json['type']['secondary'] = ['Simulated','Collision']
 my_json['categories'] = {'source':'ATLAS Collaboration'}
 my_json['title'] = 'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach from the ATLAS experiment'
 # Add a record ID for CERN Open Data. Reserved range for this release
-my_json['recid'] = '12345'
+my_json['recid'] = '93910'
 # Add the DOI - these are pre-reserved by the Open Data Portal team
-my_json['doi'] = '10.7483/OPENDATA.ATLAS.1234.1234'
+my_json['doi'] = '10.7483/OPENDATA.ATLAS.B5M9.44TN'
 # Add the file and event sums to the top-level record
 my_json['distribution']['number_events'] = big_total_events
 my_json['distribution']['number_files'] = big_total_files
