@@ -190,11 +190,12 @@ for adataset in dataset_files:
     # Add a record of the files for this dataset
     my_json['files'] = []
     # Make list of files for this dataset
-    my_json['files'] = [ {'filename':afile,
+    # For direct upload, only the size, checksum, and uri_root are needed; see https://github.com/cernopendata/data-curation/pull/258#issuecomment-2747547600
+    my_json['files'] = [ {#'filename':afile,
                           'checksum':json_file_locations[adataset][afile]['checksum'],
                           'size':json_file_locations[adataset][afile]['size'],
-                          'events':json_file_locations[adataset][afile]['events'],
-                          'type':json_file_locations[adataset][afile]['type'],
+                          #'events':json_file_locations[adataset][afile]['events'],
+                          #'type':json_file_locations[adataset][afile]['type'],
                           'uri_root':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
     # Counters to be used in updating the metadata for the overall record
     total_files = len(my_json['files'])
@@ -210,8 +211,8 @@ for adataset in dataset_files:
     big_total_size += total_size
     # Link to the top-level record
     my_json['relations'] = [ {'description':'For citing all the Open Data for Education and Outreach from this release, and to find other related datasets, please see',
-                              'doi':'10.7483/OPENDATA.ATLAS.1234.1234',
-                              'recid':'12345',
+                              'doi':'10.7483/OPENDATA.ATLAS.B5M9.44TN',
+                              'recid':'93910',
                               'title':'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach from the ATLAS experiment',
                               'type':'isChildOf'
                              } ]
