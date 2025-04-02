@@ -49,7 +49,7 @@ for dataset_number,dataset in enumerate(datasets):
         # Update the map of datasets : files
         datasets[dataset] += [ a['name'] ]
         # Get the first part of the per-file metadata
-        file_locations[dataset][ a['scope']+':'+a['name'] ] = { 'checksum':'adler32'+a['adler32'], 'size':a['bytes'], 'events':a['events'], 'type':'root' }
+        file_locations[dataset][ a['scope']+':'+a['name'] ] = { 'checksum':'adler32:'+a['adler32'], 'size':a['bytes'], 'events':a['events'], 'type':'root' }
 
     # Second rucio query, needed to get the file location on eos
     replicalist = rc.list_replicas([{'scope':my_scope,'name':dataset.split(':')[1]}])

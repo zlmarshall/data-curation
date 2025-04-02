@@ -192,11 +192,12 @@ for adataset in dataset_files:
     # Make list of files for this dataset
     # For direct upload, only the size, checksum, and uri_root are needed; see https://github.com/cernopendata/data-curation/pull/258#issuecomment-2747547600
     my_json['files'] = [ {#'filename':afile,
-                          'checksum':json_file_locations[adataset][afile]['checksum'],
+                          # Bug in the metadata creation script, no ':' after adler32; patching here to skip metadata recreation
+                          'checksum':json_file_locations[adataset][afile]['checksum'].replace('adler32','adler32:'),
                           'size':json_file_locations[adataset][afile]['size'],
                           #'events':json_file_locations[adataset][afile]['events'],
                           #'type':json_file_locations[adataset][afile]['type'],
-                          'uri_root':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
+                          'uri':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
     # Counters to be used in updating the metadata for the overall record
     total_files = len(my_json['files'])
     total_events = sum( [ int(json_file_locations[adataset][afile]['events']) for afile in json_file_locations[adataset] ] )
