@@ -197,7 +197,8 @@ for adataset in dataset_files:
                           'size':json_file_locations[adataset][afile]['size'],
                           #'events':json_file_locations[adataset][afile]['events'],
                           #'type':json_file_locations[adataset][afile]['type'],
-                          'uri':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
+                          # We don't need the special port for eospublic access, despite what rucio tells us
+                          'uri':json_file_locations[adataset][afile]['uri'].replace('eospublic.cern.ch:1094','eospublic.cern.ch') } for afile in json_file_locations[adataset] ]
     # Counters to be used in updating the metadata for the overall record
     total_files = len(my_json['files'])
     total_events = sum( [ int(json_file_locations[adataset][afile]['events']) for afile in json_file_locations[adataset] ] )
