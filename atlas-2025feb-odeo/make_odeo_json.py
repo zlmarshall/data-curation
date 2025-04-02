@@ -27,17 +27,17 @@ import json
 
 # Map of skim names into pretty-print descriptions
 skim_name_map = {
-    '1LMET30':'at least one lepton with at least 10 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a leptonically-decaying W-boson enhanced selection).',
-    '2J2LMET30':'at least two jets with at least 20 GeV of p<sub>T</sub> and two leptons with at least 10 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a di-leptonic top-quark enhanced selection).',
-    '2bjets':'at least two jets with at least 20 GeV of p<sub>T</sub> identified as containing at least one heavy flavor hadron (i.e. a Higgs boson decaying to b-quarks enhanced selection).',
-    '2muons':'at least two muons with at least 10 GeV of p<sub>T</sub> (i.e. a leptonically-decaying Z-boson enhanced selection).',
-    '2to4lep':'two to four leptons with at least 10 GeV of p<sub>T</sub> each.',
-    '3J1LMET30':'at least three jets with at least 10 GeV of p<sub>T</sub>, one lepton with at least 10 GeV of p<sub>T</sub>, and 30 GeV of missing transverse momentum (i.e. a semi-leptonic top-quark enhanced selection).',
-    'GamGam':'at least two photons with at least 20 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying to two photons enhanced selection).',
-    'exactly4lep':'exactly four leptons with at least 10 GeV of p<sub>T</sub> (i.e. a Higgs boson decaying via Z-bosons to four leptons enhanced selection).',
-    '3lep':'at least three leptons with at least 10 GeV of p<sub>T</sub> each.',
-    '4lep':'at least four leptons with at least 10 GeV of p<sub>T</sub> each.',
-    'exactly3lep':'exactly three leptons with at least 10 GeV of p<sub>T</sub> (i.e. a leptonically-decaying W+Z boson enhanced selection).',
+    '1LMET30':'At least one lepton with at least 7 GeV of p<sub>T</sub> and 30 GeV of missing transverse momentum (i.e. a leptonically-decaying W-boson enhanced selection)',
+    '2to4lep':'Two to four leptons with at least 7 GeV of p<sub>T</sub> each',
+    '2muons':'At least two muons with at least 10 GeV of p<sub>T</sub> (i.e. a leptonically-decaying Z-boson enhanced selection)',
+    '3J1LMET30':'At least three jets with at least 20 GeV of p<sub>T</sub>, at least one lepton passing tight identification requirements with at least 7 GeV of p<sub>T</sub>, and 30 GeV of missing transverse momentum (i.e. a semi-leptonic top-quark enhanced selection)',
+    'GamGam':'At least two photons with at least 25 GeV of p<sub>T</sub> each (i.e. a Higgs boson decaying to two photons enhanced selection)',
+    '2J2LMET30':'At least two jets with at least 20 GeV of p<sub>T</sub>, at least two leptons passing tight identification requirements with at least 7 GeV of p<sub>T</sub>, and 30 GeV of missing transverse momentum (i.e. a di-leptonic top-quark enhanced selection)',
+    '2bjets':'At least two jets with at least 20 GeV of p<sub>T</sub> identified as containing at least one heavy flavor hadron using the 85% working point (i.e. a Higgs boson decaying to b-quarks enhanced selection)',
+    '3lep':'At least three leptons with at least 7 GeV of p<sub>T</sub> each',
+    'exactly3lep':'Exactly three leptons with at least 7 GeV of p<sub>T</sub> (i.e. a leptonically-decaying W+Z boson enhanced selection)',
+    '4lep':'At least four leptons with at least 7 GeV of p<sub>T</sub> each',
+    'exactly4lep':'Exactly four leptons with at least 7 GeV of p<sub>T</sub> (i.e. a leptonically-decaying ZZ boson or Higgs to four leptons enhanced selection)',
     'noskim':'none.'
   }
 
@@ -199,7 +199,7 @@ for adataset in dataset_files:
                           'uri_root':json_file_locations[adataset][afile]['uri'] } for afile in json_file_locations[adataset] ]
     # Counters to be used in updating the metadata for the overall record
     total_files = len(my_json['files'])
-    total_events = sum( [ int(x['events']) for x in my_json['files'] ] )
+    total_events = sum( [ int(json_file_locations[adataset][afile]['events']) for afile in json_file_locations[adataset] ] )
     total_size = sum( [ int(x['size']) for x in my_json['files'] ] )
     # Add the file and event sums to the top-level record
     my_json['distribution']['number_events'] = total_events
