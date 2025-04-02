@@ -21,7 +21,11 @@ and we create a `meta record' containing links to all pages that summarizes the 
 Open Data for Education and Outreach.
 '''
 
+# For working with the metadata records
 import json
+
+# For making deep copies of the evergreen data, since we want to change some things
+import copy
 
 # Need new recids and DOIs
 
@@ -78,9 +82,9 @@ with open('dataset_list.txt','r') as dslist:
             skim = 'no' # Fun little hack to fix the English...
         name_short = '-'.join(aline.split('_')[2:4]).lower()
         if 'Data' in aline:
-            name = f'Run 2 2015+2016 proton-proton collision data, {skim} skim'
+            name = f'Run 2 2015+2016 proton-proton collision data beta release, {skim} skim'
         else:
-            name = f'MC simulation, {skim} skim'
+            name = f'MC simulation, 2015+2016 proton-proton collisions beta release, {skim} skim'
         rec_doi = recid_doi_pairs.pop()
         dataset_files[ aline.strip() ] = {'name_short':name_short, 'name':name,
                                           'categories':{'source':'ATLAS Collaboration'},'doi':rec_doi[1],'recid':rec_doi[0]}
@@ -135,7 +139,7 @@ evergreen_data = {
         },
         {
           "description": "More about this ntuple format",
-          "url": "https://opendata.atlas.cern/docs/documentation/data_format/FEB2025_ntuple/"
+          "url": "https://opendata.atlas.cern/docs/data/for_education/13TeV25_details"
         },
         {
           "description": "Ntuple making framework",
@@ -165,10 +169,10 @@ big_total_files = 0
 big_total_events = 0
 big_total_size = 0
 
+# Now loop through all the datasets that we are going to publish
 for adataset in dataset_files:
-    my_json = {}
-    # Update with the stuff that's always good
-    my_json.update(evergreen_data)
+    # Start from the stuff that's always good
+    my_json = copy.deepcopy(evergreen_data)
     # Simple abstract for the collection
     my_json['abstract'] = {'description':dataset_files[adataset]['name']+' from the ATLAS experiment'}
     # Name of the collections, systematically set
@@ -186,7 +190,7 @@ for adataset in dataset_files:
     my_json['doi'] = dataset_files[adataset]['doi']
     # Update the methodology section with the skim description
     skim = adataset.split('_')[2]
-    my_json['methodology']['description'] += skim_name_map[skim]
+    my_json['methodology']['description'] = evergreen_data['methodology']['description']+skim_name_map[skim]
     # Add a record of the files for this dataset
     my_json['files'] = []
     # Make list of files for this dataset
@@ -235,13 +239,15 @@ my_json = {}
 # Update with the stuff that's always good
 my_json.update(evergreen_data)
 # Simple abstract for the collection
-my_json['abstract'] = {'description':'2015 Pb-Pb Open Data for Research from the ATLAS experiment'}
+my_json['abstract'] = {'description':'Run 2 2015+2016 proton-proton collision data and corresponding MC simulation Open Data for Education and Outreach from the ATLAS experiment'}
 # Name of the collections, systematically set
 my_json['collections'] = ['ATLAS-Simulated-Datasets','ATLAS-Primary-Datasets']
 my_json['type']['secondary'] = ['Simulated','Collision']
+# Description needs a simple update
+my_json['methodology']['description'] = evergreen_data['methodology']['description'].replace('the following skimming selection was applied: ','several event pre-selections are available to accelerate analysis, as well as an inclusive set of all events.')
 # Add categories, mostly for MC datasets
 my_json['categories'] = {'source':'ATLAS Collaboration'}
-my_json['title'] = 'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach from the ATLAS experiment'
+my_json['title'] = 'ROOT ntuple format 2015-2016 proton-proton Open Data for Education and Outreach beta release from the ATLAS experiment'
 # Add a record ID for CERN Open Data. Reserved range for this release
 my_json['recid'] = '93910'
 # Add the DOI - these are pre-reserved by the Open Data Portal team
