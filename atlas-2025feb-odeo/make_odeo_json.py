@@ -143,7 +143,7 @@ evergreen_data = {
         },
         {
           "description": "Ntuple making framework",
-          "url": "http://gitlab.cern.ch/atlas-outreach-data-tools/physlitetoopendata"
+          "url": "https://zenodo.org/records/194139"
         },
         {
           "description": "Citation policy",
