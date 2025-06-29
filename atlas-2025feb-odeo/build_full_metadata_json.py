@@ -9,7 +9,7 @@ import json
 import csv
 
 # File with the mapping of file names for each dataset
-json_metadata_file = open('odeo_file_mapping_ODEO_v0_FEB2025_2025-03-01.json','r')
+json_metadata_file = open('odeo_file_mapping_ODEO_v0_FEB2025_2025-06-30.json','r')
 json_file_locations = json.load(json_metadata_file)['file_locations']
 
 # Open our metadata file to go through all the EVNT samples we've gathered metadata for
@@ -31,10 +31,15 @@ for aset in input_md:
     # No skim goes into the regular file list field
     full_md[aset]['file_list'] = [ json_file_locations['opendata:opendata.ODEO_FEB2025_noskim_MC_v0'][afile]['uri'] for afile in json_file_locations['opendata:opendata.ODEO_FEB2025_noskim_MC_v0'] if f'mc_{aset}' in afile ]
     # Now go through each skim, add the files and publish the metadata
-    for askim in ['2J2LMET30', '1LMET30', '2bjets', '3J1LMET30', 'exactly4lep', '2muons',
+    for askim in ['2J2LMET30', '1LMET30', '3J1LMET30', 'exactly4lep', '2muons',
                   '2to4lep', '4lep', 'exactly3lep', 'GamGam', '3lep']:
         full_md[aset]['skims'] += [ {'skim_type':askim,
                                      'file_list':[json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_MC_v0'][afile]['uri'] for afile in json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_MC_v0'] if f'mc_{aset}' in afile ]} ]
+    # Special handling for the different naming
+    for askim in ['2bjets']:
+        full_md[aset]['skims'] += [ {'skim_type':askim,
+                                     'file_list':[json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_mc_v1'][afile]['uri'] for afile in json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_mc_v1'] if f'mc_{aset}' in afile ]} ]
+
     full_md[aset].update(input_md[aset])
 # Write out the file
 with open(f'mc_database_metadata_2025e.json','w') as metadata_json_file:
@@ -50,10 +55,14 @@ with open(f'mc_database_metadata_2025e.json','w') as metadata_json_file:
 # Reformat and then write the data metadata to a file
 data_metadata={'data':{'skims':[],'file_list':[]}}
 data_metadata['data']['file_list'] = [ json_file_locations['opendata:opendata.ODEO_FEB2025_noskim_Data_v0'][x]['uri'] for x in json_file_locations['opendata:opendata.ODEO_FEB2025_noskim_Data_v0'] ]
-for askim in ['2J2LMET30', '1LMET30', '2bjets', '3J1LMET30', 'exactly4lep', '2muons',
+for askim in ['2J2LMET30', '1LMET30', '3J1LMET30', 'exactly4lep', '2muons',
               '2to4lep', '4lep', 'exactly3lep', 'GamGam', '3lep']:
     data_metadata['data']['skims'] += [ {'skim_type':askim,
                                          'file_list':[ json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_Data_v0'][x]['uri'] for x in json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_Data_v0'] ]} ]
+# Special handling for the different naming
+for askim in ['2bjets']:
+    data_metadata['data']['skims'] += [ {'skim_type':askim,
+                                         'file_list':[ json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_data_v1'][x]['uri'] for x in json_file_locations[f'opendata:opendata.ODEO_FEB2025_{askim}_data_v1'] ]} ]
 with open(f'data_database_metadata_2025e.json','w') as data_metadata_json_file:
     json.dump(
         data_metadata,
