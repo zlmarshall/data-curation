@@ -138,15 +138,15 @@ evergreen_data = {
         },
         {
           "description": "Resources to understand and use the open data for education and outreach",
-          "url": "https://opendata.atlas.cern/docs/category/13-tev-tutorials-for-education"
+          "url": "https://opendata.atlas.cern/docs/category/13-tev-2025-beta-release"
         },
         {
           "description": "More about this ntuple format",
-          "url": "https://opendata.atlas.cern/docs/data/for_education/13TeV25_details"
+          "url": "https://opendata.atlas.cern/docs/data/for_education/13TeV25_details#variable-list"
         },
         {
-          "description": "Ntuple making framework",
-          "url": "https://zenodo.org/records/194139"
+          "description": "Ntuple making framework (PhysLiteToOpenData)",
+          "url": "https://doi.org/10.5281/zenodo.15791091"
         },
         {
           "description": "Citation policy",
