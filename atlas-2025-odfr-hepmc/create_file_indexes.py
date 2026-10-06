@@ -103,9 +103,9 @@ for AFIXTUREFILE in sorted(glob.glob("test/atlas-hepmc-*.json")):
                 )
                 files_new.append(
                     {
-                        "checksum": f"adler32:{get_file_checksum(f'test/eos-file-indexes/{prefix}_{basename}_file_index.json')}",
+                        "checksum": f"adler32:{get_file_checksum(f'test/eos-file-indexes/{prefix}_{basename}_file_index.txt')}",
                         "size": get_file_size(
-                            f"test/eos-file-indexes/{prefix}_{basename}_file_index.json"
+                            f"test/eos-file-indexes/{prefix}_{basename}_file_index.txt"
                         ),
                         "type": "index.txt",
                         "uri": f"root://eospublic.cern.ch//eos/opendata/atlas/rucio/{prefix}/file-indexes/{prefix}_{basename}_file_index.txt",
